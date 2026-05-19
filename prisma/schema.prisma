@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ResumeTemplate {
+  editorial
+  modern
+  executive
+  minimal
+  corporate
+  technical
+  creative
+}
+
+enum SubscriptionTier {
+  free
+  pro
+  team
+  enterprise
+}
+
+model User {
+  id               String            @id @default(cuid())
+  name             String?
+  email            String?           @unique
+  emailVerified    DateTime?
+  image            String?
+  tier             SubscriptionTier  @default(free)
+  resumes          Resume[]
+  conversations    AIConversation[]
+  accounts         Account[]
+  sessions         Session[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Resume {
+  id              String           @id @default(cuid())
+  userId          String
+  title           String
+  targetRole      String
+  targetCompany   String?
+  template        ResumeTemplate   @default(modern)
+  data            Json
+  versions        ResumeVersion[]
+  jobDescriptions JobDescription[]
+  atsReports      ATSReport[]
+  conversations   AIConversation[]
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([userId, updatedAt])
+}
+
+model ResumeVersion {
+  id        String   @id @default(cuid())
+  resumeId  String
+  label     String
+  snapshot  Json
+  resume    Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([resumeId, createdAt])
+}
+
+model AIConversation {
+  id        String      @id @default(cuid())
+  userId    String
+  resumeId  String?
+  title     String
+  messages  AIMessage[]
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume    Resume?     @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([userId, updatedAt])
+}
+
+model AIMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  role           String
+  content        String         @db.Text
+  metadata       Json?
+  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime       @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model JobDescription {
+  id              String      @id @default(cuid())
+  resumeId        String
+  company         String?
+  title           String?
+  content         String      @db.Text
+  extractedTerms  Json?
+  matchPercentage Int?
+  resume          Resume      @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  reports         ATSReport[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([resumeId, updatedAt])
+}
+
+model ATSReport {
+  id               String          @id @default(cuid())
+  resumeId         String
+  jobDescriptionId String?
+  score            Int
+  matchPercentage  Int
+  missingKeywords  Json
+  suggestions      Json
+  categories       Json
+  resume           Resume          @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  jobDescription   JobDescription? @relation(fields: [jobDescriptionId], references: [id], onDelete: SetNull)
+  createdAt        DateTime        @default(now())
+
+  @@index([resumeId, createdAt])
+}

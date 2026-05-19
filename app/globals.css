@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 42 33% 98%;
+  --foreground: 222 26% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 26% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 26% 12%;
+  --primary: 173 80% 30%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 217 18% 93%;
+  --secondary-foreground: 222 26% 14%;
+  --muted: 220 16% 94%;
+  --muted-foreground: 220 9% 43%;
+  --accent: 31 92% 58%;
+  --accent-foreground: 222 26% 12%;
+  --destructive: 0 76% 54%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 16% 88%;
+  --input: 220 16% 88%;
+  --ring: 173 80% 30%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 222 26% 8%;
+  --foreground: 210 27% 96%;
+  --card: 222 24% 11%;
+  --card-foreground: 210 27% 96%;
+  --popover: 222 24% 11%;
+  --popover-foreground: 210 27% 96%;
+  --primary: 174 67% 44%;
+  --primary-foreground: 222 26% 8%;
+  --secondary: 220 20% 16%;
+  --secondary-foreground: 210 27% 96%;
+  --muted: 220 20% 16%;
+  --muted-foreground: 218 12% 68%;
+  --accent: 35 91% 58%;
+  --accent-foreground: 222 26% 8%;
+  --destructive: 0 70% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 18% 20%;
+  --input: 220 18% 20%;
+  --ring: 174 67% 44%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(20, 184, 166, 0.14), transparent 28rem),
+    radial-gradient(circle at 86% 12%, rgba(245, 158, 11, 0.12), transparent 25rem),
+    hsl(var(--background));
+  color: hsl(var(--foreground));
+  text-rendering: geometricPrecision;
+}
+
+::selection {
+  background: hsla(var(--primary), 0.22);
+}
+
+.glass-panel {
+  background: color-mix(in oklab, hsl(var(--card)) 82%, transparent);
+  backdrop-filter: blur(18px);
+  border: 1px solid hsl(var(--border));
+}
+
+.resume-paper {
+  background: white;
+  color: #121826;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
+}
+
+.dark .resume-paper {
+  background: #f8fafc;
+  color: #111827;
+}
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+  .resume-paper {
+    box-shadow: none;
+    width: 100% !important;
+    min-height: auto !important;
+    border: 0 !important;
+  }
+}
