@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Database, KeyRound, ShieldCheck } from "lucide-react";
+import { Bell, Database, ShieldCheck } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,33 +36,13 @@ export function SettingsModal() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <KeyRound className="size-5 text-primary" />
-            <CardTitle>AI Configuration</CardTitle>
-          </div>
-          <CardDescription>Server-side Claude Sonnet requests use environment variables.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Label>Model</Label>
-            <Input defaultValue="CLAUDE_MODEL" readOnly />
-          </div>
-          <div className="grid gap-2">
-            <Label>API key</Label>
-            <Input defaultValue="ANTHROPIC_API_KEY" readOnly />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
             <Bell className="size-5 text-primary" />
             <CardTitle>Notifications</CardTitle>
           </div>
-          <CardDescription>Product hooks are prepared for reminders, usage alerts, and coaching nudges.</CardDescription>
+          <CardDescription>Product hooks are prepared for reminders, usage alerts, and resume health nudges.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          {["Weekly resume health summary", "ATS regression alerts", "AI usage threshold"].map((label) => (
+          {["Weekly resume health summary", "ATS regression alerts", "Export completion alerts"].map((label) => (
             <div key={label} className="flex items-center justify-between rounded-lg border bg-background p-3">
               <span className="text-sm">{label}</span>
               <Switch checked onCheckedChange={() => undefined} aria-label={label} />
@@ -80,7 +60,7 @@ export function SettingsModal() {
           <CardDescription>Local persistence is active now. Prisma schema is ready for multi-user deployment.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-sm text-muted-foreground">
-          <p>Resume drafts, versions, AI conversations, job descriptions, and ATS reports have database-ready models.</p>
+          <p>Resume drafts, versions, job descriptions, and ATS reports have database-ready models.</p>
           <p>Switch from local storage to Prisma-backed routes when authentication is enabled.</p>
         </CardContent>
       </Card>

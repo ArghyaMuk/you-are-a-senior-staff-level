@@ -1,6 +1,5 @@
 "use client";
 
-import { AIAgentPanel } from "@/components/ai/ai-agent-panel";
 import { ATSDashboard } from "@/components/ats/ats-dashboard";
 import { ExportToolbar } from "@/components/export/export-toolbar";
 import { ResumeEditor } from "@/components/editor/resume-editor";
@@ -23,7 +22,6 @@ export default function EditorPage() {
           <TabsList className="flex h-auto w-full flex-wrap justify-start">
             <TabsTrigger value="editor">Resume Editor</TabsTrigger>
             <TabsTrigger value="ats">ATS Score</TabsTrigger>
-            <TabsTrigger value="agent">AI Agent</TabsTrigger>
             <TabsTrigger value="preview">Preview & Export</TabsTrigger>
           </TabsList>
           <TabsContent value="editor">
@@ -31,9 +29,6 @@ export default function EditorPage() {
           </TabsContent>
           <TabsContent value="ats">
             <ATSDashboard />
-          </TabsContent>
-          <TabsContent value="agent">
-            <AIAgentPanel />
           </TabsContent>
           <TabsContent value="preview">
             <div className="grid gap-6">

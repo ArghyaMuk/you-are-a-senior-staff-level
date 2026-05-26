@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, BarChart3, Bot, CheckCircle2, FileText, Layers, Lock, Sparkles, Wand2 } from "lucide-react";
+import { ArrowRight, BarChart3, CheckCircle2, FileText, Layers, Lock, SearchCheck, Wand2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 const features = [
   { icon: FileText, title: "Structured resume builder", text: "Edit every section with typed data, smart defaults, autosave, and version history." },
   { icon: BarChart3, title: "Real ATS scoring", text: "Checks parsing, keywords, action verbs, quantified impact, readability, and role alignment." },
-  { icon: Bot, title: "Claude Sonnet coach", text: "Rewrite bullets, tailor to JDs, generate cover letters, and explain what to fix next." },
+  { icon: SearchCheck, title: "Guided resume review", text: "Spot keyword gaps, structure issues, and practical fixes before you export." },
   { icon: Layers, title: "Premium templates", text: "Seven ATS-safe templates with distinct typography, spacing, and print behavior." },
   { icon: Wand2, title: "Smart optimization", text: "Extract missing skills, strengthen bullets, and build company-specific resume variants." },
   { icon: Lock, title: "Enterprise-ready base", text: "Auth-ready, Prisma-ready, Vercel-ready architecture with local persistence today." }
@@ -64,13 +64,13 @@ function ResumeMockup() {
         className="rounded-lg border bg-card p-4 shadow-lift"
       >
         <div className="flex items-center gap-2">
-          <Sparkles className="size-4 text-primary" />
-          <p className="text-sm font-semibold">AI coach</p>
+          <SearchCheck className="size-4 text-primary" />
+          <p className="text-sm font-semibold">Review notes</p>
         </div>
         <div className="mt-4 space-y-3 text-sm">
           <div className="rounded-lg bg-muted p-3">Your strongest missing keyword is observability. Add it to the platform bullet with production proof.</div>
-          <div className="rounded-lg bg-primary p-3 text-primary-foreground">Rewrite my weakest bullet.</div>
-          <div className="rounded-lg border bg-background p-3">Owned an AI workflow platform processing 2.4M monthly requests with 99.95% uptime.</div>
+          <div className="rounded-lg bg-primary p-3 text-primary-foreground">ATS score improved to 92.</div>
+          <div className="rounded-lg border bg-background p-3">Owned a workflow platform processing 2.4M monthly requests with 99.95% uptime.</div>
         </div>
       </motion.div>
     </div>
@@ -83,16 +83,16 @@ export function LandingHero() {
       <section className="relative overflow-hidden px-4 py-20 sm:py-24">
         <div className="absolute inset-0 -z-10 animate-soft-pulse bg-[linear-gradient(120deg,rgba(20,184,166,0.13),transparent_34%,rgba(245,158,11,0.12)_70%,transparent)]" />
         <div className="container text-center">
-          <Badge variant="secondary">AI-powered ATS resume builder</Badge>
+          <Badge variant="secondary">ATS resume builder</Badge>
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             className="mx-auto mt-5 max-w-4xl text-5xl font-semibold tracking-normal sm:text-6xl"
           >
-            RésuméForge AI
+            RésuméForge
           </motion.h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            Build, score, tailor, and export premium ATS-safe resumes with a contextual Claude Sonnet career coach.
+            Build, score, tailor, and export premium ATS-safe resumes with practical keyword and readability guidance.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" variant="premium">
@@ -171,7 +171,7 @@ export function LandingHero() {
         <div className="container grid gap-4 md:grid-cols-3">
           {[
             ["Starter", "$0", "Local drafts, ATS score, TXT export"],
-            ["Pro", "$16", "Claude coaching, PDF/DOCX export, version history"],
+            ["Pro", "$16", "PDF/DOCX export, version history, advanced ATS guidance"],
             ["Team", "$49", "Shared templates, admin controls, usage reporting"]
           ].map(([name, price, detail]) => (
             <Card key={name} className={name === "Pro" ? "border-primary shadow-glow" : ""}>

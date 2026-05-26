@@ -4,7 +4,6 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type {
   AchievementItem,
-  AIMessage,
   CertificationItem,
   EducationItem,
   ExperienceItem,
@@ -24,7 +23,6 @@ type ResumeStore = {
   resumes: ResumeData[];
   activeResumeId: string;
   versions: ResumeVersion[];
-  aiMessages: Record<string, AIMessage[]>;
   undoStack: ResumeData[];
   redoStack: ResumeData[];
   hydrated: boolean;
@@ -51,8 +49,6 @@ type ResumeStore = {
   restoreVersion: (versionId: string) => void;
   undo: () => void;
   redo: () => void;
-  appendAIMessage: (resumeId: string, message: AIMessage) => void;
-  updateAIMessage: (resumeId: string, messageId: string, patch: Partial<AIMessage>) => void;
   resetDemoData: () => void;
 };
 
@@ -148,17 +144,6 @@ export const useResumeStore = create<ResumeStore>()(
       resumes: [sampleResume],
       activeResumeId: sampleResume.id,
       versions: [],
-      aiMessages: {
-        [sampleResume.id]: [
-          {
-            id: uid("msg"),
-            role: "assistant",
-            content:
-              "I have your resume context loaded. Paste a job description or ask me to strengthen bullets, rewrite the summary, or close ATS gaps.",
-            createdAt: new Date().toISOString()
-          }
-        ]
-      },
       undoStack: [],
       redoStack: [],
       hydrated: false,
@@ -173,10 +158,6 @@ export const useResumeStore = create<ResumeStore>()(
         set((state) => ({
           resumes: [resume, ...state.resumes],
           activeResumeId: resume.id,
-          aiMessages: {
-            ...state.aiMessages,
-            [resume.id]: []
-          },
           undoStack: [],
           redoStack: []
         }));
@@ -196,7 +177,6 @@ export const useResumeStore = create<ResumeStore>()(
         set((state) => ({
           resumes: [duplicate, ...state.resumes],
           activeResumeId: duplicate.id,
-          aiMessages: { ...state.aiMessages, [duplicate.id]: [] },
           undoStack: [],
           redoStack: []
         }));
@@ -439,26 +419,11 @@ export const useResumeStore = create<ResumeStore>()(
             undoStack: [...state.undoStack, clone(active)].slice(-30)
           };
         }),
-      appendAIMessage: (resumeId, message) =>
-        set((state) => ({
-          aiMessages: {
-            ...state.aiMessages,
-            [resumeId]: [...(state.aiMessages[resumeId] ?? []), message]
-          }
-        })),
-      updateAIMessage: (resumeId, messageId, patch) =>
-        set((state) => ({
-          aiMessages: {
-            ...state.aiMessages,
-            [resumeId]: (state.aiMessages[resumeId] ?? []).map((message) => (message.id === messageId ? { ...message, ...patch } : message))
-          }
-        })),
       resetDemoData: () =>
         set({
           resumes: [sampleResume],
           activeResumeId: sampleResume.id,
           versions: [],
-          aiMessages: {},
           undoStack: [],
           redoStack: []
         })
@@ -469,8 +434,7 @@ export const useResumeStore = create<ResumeStore>()(
       partialize: (state) => ({
         resumes: state.resumes,
         activeResumeId: state.activeResumeId,
-        versions: state.versions,
-        aiMessages: state.aiMessages
+        versions: state.versions
       }),
       onRehydrateStorage: () => (state) => state?.setHydrated(true)
     }

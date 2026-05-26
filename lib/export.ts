@@ -42,7 +42,7 @@ export async function exportDOCX(resume: ResumeData) {
   });
 
   const doc = new Document({
-    creator: "RésuméForge AI",
+    creator: "RésuméForge",
     title: resume.title,
     description: "ATS-safe resume export",
     sections: [

@@ -30,9 +30,10 @@ model User {
   email            String?           @unique
   emailVerified    DateTime?
   image            String?
+  passwordHash     String?
+  passwordSalt     String?
   tier             SubscriptionTier  @default(free)
   resumes          Resume[]
-  conversations    AIConversation[]
   accounts         Account[]
   sessions         Session[]
   createdAt        DateTime          @default(now())
@@ -84,7 +85,6 @@ model Resume {
   versions        ResumeVersion[]
   jobDescriptions JobDescription[]
   atsReports      ATSReport[]
-  conversations   AIConversation[]
   user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -101,32 +101,6 @@ model ResumeVersion {
   createdAt DateTime @default(now())
 
   @@index([resumeId, createdAt])
-}
-
-model AIConversation {
-  id        String      @id @default(cuid())
-  userId    String
-  resumeId  String?
-  title     String
-  messages  AIMessage[]
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  resume    Resume?     @relation(fields: [resumeId], references: [id], onDelete: SetNull)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-
-  @@index([userId, updatedAt])
-}
-
-model AIMessage {
-  id             String         @id @default(cuid())
-  conversationId String
-  role           String
-  content        String         @db.Text
-  metadata       Json?
-  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  createdAt      DateTime       @default(now())
-
-  @@index([conversationId, createdAt])
 }
 
 model JobDescription {

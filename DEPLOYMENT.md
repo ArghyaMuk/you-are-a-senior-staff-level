@@ -17,9 +17,8 @@ The included `vercel.json` sets the framework, build command, install command, a
 
 ## Required Services
 
-- Anthropic API key for Claude Sonnet-powered AI routes
 - PostgreSQL database for production persistence
-- GitHub OAuth credentials if using the included Auth.js provider
+- Google and Microsoft OAuth credentials if using social login
 
 ## Database Setup
 
@@ -39,17 +38,9 @@ For Vercel, run migrations from CI or a controlled release shell against your pr
 - `/dashboard`
 - `/editor`
 - `/ats`
-- `/ai-agent`
 - `/templates`
 - `/preview`
 - `/settings`
-
-## AI Routes
-
-- `POST /api/ai/chat`: Streaming Claude Sonnet coaching response
-- `POST /api/ai/rewrite`: Rewrite bullets, summaries, and resume content
-- `POST /api/ai/ats`: Server-side ATS report generation
-- `POST /api/ai/jd-analysis`: Job description extraction and match analysis
 
 ## Export Behavior
 
@@ -62,7 +53,6 @@ For Vercel, run migrations from CI or a controlled release shell against your pr
 ## Hardening Checklist
 
 - Replace demo local persistence with authenticated Prisma-backed writes.
-- Add billing and usage enforcement for AI calls.
-- Add request rate limiting and prompt logging controls.
+- Configure `AUTH_GOOGLE_*` and `AUTH_MICROSOFT_ENTRA_ID_*` before enabling social login in production.
 - Store ATS reports and JD analyses server-side for historical comparison.
 - Add background export rendering for high-volume team accounts.

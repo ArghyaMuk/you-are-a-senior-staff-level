@@ -1,4 +1,4 @@
-import type { AIQuickAction, ResumeData, SectionConfig } from "@/types/resume";
+import type { ResumeData, SectionConfig } from "@/types/resume";
 import { uid } from "@/lib/utils";
 
 export const defaultSections: SectionConfig[] = [
@@ -11,7 +11,7 @@ export const defaultSections: SectionConfig[] = [
   { key: "achievements", title: "Achievements", visible: true, order: 6 }
 ];
 
-export const demoJobDescription = `Senior Product Engineer needed to build AI workflow products using React, Next.js, TypeScript, Node.js, analytics, APIs, and cloud deployment. The ideal candidate has shipped SaaS products, improves conversion and activation, partners with design, mentors engineers, owns architecture, and uses data to prioritize user outcomes. Experience with AI agents, LLM APIs, ATS-safe document generation, observability, and experimentation is preferred.`;
+export const demoJobDescription = `Senior Product Engineer needed to build workflow products using React, Next.js, TypeScript, Node.js, analytics, APIs, and cloud deployment. The ideal candidate has shipped SaaS products, improves conversion and activation, partners with design, mentors engineers, owns architecture, and uses data to prioritize user outcomes. Experience with platform APIs, ATS-safe document generation, observability, and experimentation is preferred.`;
 
 export const sampleResume: ResumeData = {
   id: "resume_primary",
@@ -22,7 +22,7 @@ export const sampleResume: ResumeData = {
   template: "modern",
   personal: {
     fullName: "Avery Stone",
-    headline: "Senior Product Engineer | AI Workflow Platforms",
+    headline: "Senior Product Engineer | Workflow Platforms",
     email: "avery.stone@example.com",
     phone: "+1 415 555 0184",
     location: "San Francisco, CA",
@@ -31,7 +31,7 @@ export const sampleResume: ResumeData = {
     github: "https://github.com/averystone"
   },
   summary:
-    "Senior full-stack product engineer with 8+ years building high-retention SaaS workflow products. Strong track record shipping AI-assisted experiences, improving activation funnels, and partnering with design, data, and GTM teams to turn ambiguous customer needs into measurable business outcomes.",
+    "Senior full-stack product engineer with 8+ years building high-retention SaaS workflow products. Strong track record shipping polished product experiences, improving activation funnels, and partnering with design, data, and GTM teams to turn ambiguous customer needs into measurable business outcomes.",
   experience: [
     {
       id: uid("exp"),
@@ -41,10 +41,10 @@ export const sampleResume: ResumeData = {
       startDate: "2021",
       endDate: "Present",
       current: true,
-      technologies: ["Next.js", "TypeScript", "Postgres", "LLM APIs", "Vercel"],
+      technologies: ["Next.js", "TypeScript", "Postgres", "REST APIs", "Vercel"],
       bullets: [
-        "Led the rebuild of an AI workflow editor used by 42K monthly active users, reducing task completion time by 31% and increasing paid activation by 18%.",
-        "Architected a streaming AI assistant with contextual retrieval, audit logging, and usage controls that processed 2.4M monthly requests with 99.95% uptime.",
+        "Led the rebuild of a workflow editor used by 42K monthly active users, reducing task completion time by 31% and increasing paid activation by 18%.",
+        "Architected a document automation platform with contextual retrieval, audit logging, and usage controls that processed 2.4M monthly requests with 99.95% uptime.",
         "Partnered with design and data teams to run 14 experiments across onboarding, increasing trial-to-paid conversion from 8.7% to 12.9%.",
         "Mentored six engineers through design reviews, RFCs, and production readiness rituals across frontend and platform surfaces."
       ]
@@ -81,12 +81,12 @@ export const sampleResume: ResumeData = {
     {
       id: uid("project"),
       name: "SignalDraft",
-      description: "AI writing workflow for product teams.",
+      description: "Writing workflow for product teams.",
       url: "https://signaldraft.example.com",
       technologies: ["Next.js", "RAG", "OpenTelemetry"],
       bullets: [
-        "Designed a block-based editor with citation-aware AI suggestions and team review flows.",
-        "Implemented trace dashboards that cut debugging time for LLM latency issues by 38%."
+        "Designed a block-based editor with citation-aware suggestions and team review flows.",
+        "Implemented trace dashboards that cut debugging time for API latency issues by 38%."
       ]
     }
   ],
@@ -106,8 +106,8 @@ export const sampleResume: ResumeData = {
     },
     {
       id: uid("skill"),
-      label: "AI & Data",
-      skills: ["LLM APIs", "Prompt Engineering", "Analytics", "Experimentation", "Observability"]
+      label: "Platform & Data",
+      skills: ["REST APIs", "Data Modeling", "Analytics", "Experimentation", "Observability"]
     },
     {
       id: uid("skill"),
@@ -123,7 +123,7 @@ export const sampleResume: ResumeData = {
     },
     {
       id: uid("ach"),
-      label: "Owned uptime and quality standards for AI workflow platform",
+      label: "Owned uptime and quality standards for workflow platform",
       metric: "99.95% uptime"
     }
   ],
@@ -131,36 +131,3 @@ export const sampleResume: ResumeData = {
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString()
 };
-
-export const aiQuickActions: AIQuickAction[] = [
-  {
-    id: "tailor",
-    label: "Tailor to JD",
-    prompt: "Tailor this resume for the pasted job description. Prioritize role alignment, missing keywords, and truthful repositioning."
-  },
-  {
-    id: "ats",
-    label: "Improve ATS",
-    prompt: "Review my resume for ATS compatibility and give the highest-impact fixes first."
-  },
-  {
-    id: "bullets",
-    label: "Strengthen Bullets",
-    prompt: "Rewrite my weakest experience bullets using action verbs, scope, metrics, and business impact."
-  },
-  {
-    id: "summary",
-    label: "Rewrite Summary",
-    prompt: "Rewrite my professional summary to be concise, senior, specific, and aligned to my target role."
-  },
-  {
-    id: "keywords",
-    label: "Find Missing Keywords",
-    prompt: "Compare my resume with the job description and list missing keywords with suggestions for where to add them."
-  },
-  {
-    id: "cover",
-    label: "Generate Cover Letter",
-    prompt: "Generate a concise, role-specific cover letter that uses my resume evidence without sounding generic."
-  }
-];

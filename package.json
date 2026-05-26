@@ -1,8 +1,8 @@
 {
-  "name": "resumeforge-ai",
+  "name": "resumeforge",
   "version": "1.0.0",
   "private": true,
-  "description": "RésuméForge AI, a premium AI-powered ATS resume builder SaaS built with Next.js 15.",
+  "description": "RésuméForge, a premium ATS resume builder SaaS built with Next.js 15.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

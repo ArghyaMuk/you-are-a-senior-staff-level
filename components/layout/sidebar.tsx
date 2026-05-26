@@ -10,7 +10,6 @@ import {
   LayoutTemplate,
   Plus,
   Settings,
-  Sparkles,
   UserRoundCheck
 } from "lucide-react";
 import { toast } from "sonner";
@@ -25,7 +24,6 @@ const items = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/editor", label: "Editor", icon: FileText },
   { href: "/ats", label: "ATS Score", icon: BarChart3 },
-  { href: "/ai-agent", label: "AI Agent", icon: Sparkles },
   { href: "/templates", label: "Templates", icon: LayoutTemplate },
   { href: "/preview", label: "Preview", icon: Layers },
   { href: "/settings", label: "Settings", icon: Settings }
@@ -46,7 +44,7 @@ export function Sidebar() {
             <span className="flex size-9 items-center justify-center rounded-md bg-foreground text-background">
               <FileText className="size-4" />
             </span>
-            RésuméForge AI
+            RésuméForge
           </Link>
           <ThemeToggle />
         </div>

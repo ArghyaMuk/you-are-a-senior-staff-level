@@ -5,15 +5,15 @@ import { ThemeProvider } from "@/components/layout/theme-provider";
 
 export const metadata: Metadata = {
   title: {
-    default: "RésuméForge AI",
-    template: "%s | RésuméForge AI"
+    default: "RésuméForge",
+    template: "%s | RésuméForge"
   },
-  description: "A premium AI-powered ATS resume builder for high-signal job applications.",
+  description: "A premium ATS resume builder for high-signal job applications.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   openGraph: {
-    title: "RésuméForge AI",
-    description: "Create, analyze, tailor, and export ATS-safe resumes with Claude Sonnet.",
-    siteName: "RésuméForge AI",
+    title: "RésuméForge",
+    description: "Create, analyze, tailor, and export ATS-safe resumes.",
+    siteName: "RésuméForge",
     type: "website"
   }
 };

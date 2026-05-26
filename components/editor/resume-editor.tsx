@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,7 @@ import {
   verticalListSortingStrategy
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ArrowDownUp, Eye, EyeOff, GripVertical, History, RotateCcw, Save, Undo2 } from "lucide-react";
+import { ArrowDownUp, Eye, EyeOff, GripVertical, History, RotateCcw, Save, Undo2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ResumeSectionEditor } from "@/components/editor/resume-section-editor";
+import { ResumePreview } from "@/components/templates/resume-preview";
 import type { SectionKey } from "@/types/resume";
 import { useActiveResume } from "@/hooks/use-active-resume";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
@@ -86,6 +87,7 @@ function SortableSection({
 
 export function ResumeEditor() {
   const { resume } = useActiveResume();
+  const [previewOpen, setPreviewOpen] = useState(false);
   const patchActiveResume = useResumeStore((state) => state.patchActiveResume);
   const patchPersonal = useResumeStore((state) => state.patchPersonal);
   const reorderSections = useResumeStore((state) => state.reorderSections);
@@ -152,8 +154,9 @@ export function ResumeEditor() {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-      <div className="grid gap-6">
+    <>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid gap-6">
         <Card>
           <CardHeader>
             <div className="flex flex-wrap items-start justify-between gap-4">
@@ -162,6 +165,10 @@ export function ResumeEditor() {
                 <CardDescription>Autosaves locally on every change. Use Cmd/Ctrl+S to save a named version.</CardDescription>
               </div>
               <div className="flex gap-2">
+                <Button type="button" variant="outline" onClick={() => setPreviewOpen(true)}>
+                  <Eye />
+                  Check CV
+                </Button>
                 <Button
                   type="button"
                   variant="outline"
@@ -264,8 +271,8 @@ export function ResumeEditor() {
         ))}
       </div>
 
-      <div className="space-y-6">
-        <Card className="sticky top-6">
+        <aside className="space-y-6 xl:sticky xl:top-6 xl:self-start">
+        <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
               <ArrowDownUp className="size-5 text-primary" />
@@ -319,7 +326,27 @@ export function ResumeEditor() {
             )}
           </CardContent>
         </Card>
+        </aside>
       </div>
-    </div>
+
+      {previewOpen ? (
+        <div className="fixed inset-0 z-50 bg-background/85 p-4 backdrop-blur-sm no-print" role="dialog" aria-modal="true" aria-label="CV preview">
+          <div className="mx-auto flex h-full max-w-6xl flex-col overflow-hidden rounded-lg border bg-background shadow-lift">
+            <div className="flex items-center justify-between gap-4 border-b px-5 py-3">
+              <div>
+                <h2 className="text-lg font-semibold">CV Preview</h2>
+                <p className="text-sm text-muted-foreground">Review the latest version of your resume, then close to keep editing.</p>
+              </div>
+              <Button type="button" variant="ghost" size="icon" aria-label="Close CV preview" onClick={() => setPreviewOpen(false)}>
+                <X />
+              </Button>
+            </div>
+            <div className="flex-1 overflow-auto bg-muted/50 p-6">
+              <ResumePreview resume={resume} />
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }

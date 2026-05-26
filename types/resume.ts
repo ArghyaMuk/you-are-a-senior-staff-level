@@ -153,19 +153,3 @@ export interface JDAnalysis {
   matchPercentage: number;
   recommendations: string[];
 }
-
-export type AIRole = "user" | "assistant" | "system";
-
-export interface AIMessage {
-  id: string;
-  role: Exclude<AIRole, "system">;
-  content: string;
-  createdAt: string;
-  pending?: boolean;
-}
-
-export interface AIQuickAction {
-  id: string;
-  label: string;
-  prompt: string;
-}

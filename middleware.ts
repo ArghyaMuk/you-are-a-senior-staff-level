@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const protectedRoutes = ["/dashboard", "/editor", "/ats", "/ai-agent", "/templates", "/preview", "/settings"];
+const protectedRoutes = ["/dashboard", "/editor", "/ats", "/templates", "/preview", "/settings"];
 
 export function middleware(request: NextRequest) {
   const authRequired = process.env.NEXT_PUBLIC_AUTH_MODE === "required";
@@ -17,7 +17,7 @@ export function middleware(request: NextRequest) {
     request.cookies.has("__Secure-next-auth.session-token");
 
   if (!hasSession) {
-    const url = new URL("/", request.url);
+    const url = new URL("/login", request.url);
     url.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
@@ -26,5 +26,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/editor/:path*", "/ats/:path*", "/ai-agent/:path*", "/templates/:path*", "/preview/:path*", "/settings/:path*"]
+  matcher: ["/dashboard/:path*", "/editor/:path*", "/ats/:path*", "/templates/:path*", "/preview/:path*", "/settings/:path*"]
 };

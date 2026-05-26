@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, FileText, Sparkles } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,7 @@ export function Navbar() {
           <span className="flex size-9 items-center justify-center rounded-md bg-foreground text-background shadow-sm">
             <FileText className="size-4" />
           </span>
-          <span>RésuméForge AI</span>
+          <span>RésuméForge</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => (
@@ -44,9 +44,8 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Button asChild variant="outline" className="hidden sm:inline-flex">
-            <Link href="/ai-agent" prefetch={false}>
-              <Sparkles />
-              AI Agent
+            <Link href="/login" prefetch={false}>
+              Login
             </Link>
           </Button>
           <Button asChild variant="premium">
