@@ -1,5 +1,4 @@
 import type { ResumeData, SectionConfig } from "@/types/resume";
-import { uid } from "@/lib/utils";
 
 export const defaultSections: SectionConfig[] = [
   { key: "summary", title: "Professional Summary", visible: true, order: 0 },
@@ -34,7 +33,7 @@ export const sampleResume: ResumeData = {
     "Senior full-stack product engineer with 8+ years building high-retention SaaS workflow products. Strong track record shipping polished product experiences, improving activation funnels, and partnering with design, data, and GTM teams to turn ambiguous customer needs into measurable business outcomes.",
   experience: [
     {
-      id: uid("exp"),
+      id: "sample_exp_northstar",
       company: "Northstar Labs",
       role: "Senior Product Engineer",
       location: "Remote",
@@ -50,7 +49,7 @@ export const sampleResume: ResumeData = {
       ]
     },
     {
-      id: uid("exp"),
+      id: "sample_exp_brightdesk",
       company: "BrightDesk",
       role: "Full-Stack Engineer",
       location: "New York, NY",
@@ -67,7 +66,7 @@ export const sampleResume: ResumeData = {
   ],
   education: [
     {
-      id: uid("edu"),
+      id: "sample_edu_umich",
       school: "University of Michigan",
       degree: "B.S.",
       field: "Computer Science",
@@ -79,7 +78,7 @@ export const sampleResume: ResumeData = {
   ],
   projects: [
     {
-      id: uid("project"),
+      id: "sample_project_signaldraft",
       name: "SignalDraft",
       description: "Writing workflow for product teams.",
       url: "https://signaldraft.example.com",
@@ -92,7 +91,7 @@ export const sampleResume: ResumeData = {
   ],
   certifications: [
     {
-      id: uid("cert"),
+      id: "sample_cert_aws_saa",
       name: "AWS Certified Solutions Architect",
       issuer: "Amazon Web Services",
       date: "2023"
@@ -100,34 +99,34 @@ export const sampleResume: ResumeData = {
   ],
   skills: [
     {
-      id: uid("skill"),
+      id: "sample_skill_product",
       label: "Product Engineering",
       skills: ["React", "Next.js", "TypeScript", "Node.js", "API Design", "Design Systems"]
     },
     {
-      id: uid("skill"),
+      id: "sample_skill_platform",
       label: "Platform & Data",
       skills: ["REST APIs", "Data Modeling", "Analytics", "Experimentation", "Observability"]
     },
     {
-      id: uid("skill"),
+      id: "sample_skill_leadership",
       label: "Leadership",
       skills: ["Technical Strategy", "Mentorship", "Roadmapping", "Cross-functional Delivery"]
     }
   ],
   achievements: [
     {
-      id: uid("ach"),
+      id: "sample_ach_activation",
       label: "Improved activation funnels across three SaaS products",
       metric: "+18% paid activation"
     },
     {
-      id: uid("ach"),
+      id: "sample_ach_uptime",
       label: "Owned uptime and quality standards for workflow platform",
       metric: "99.95% uptime"
     }
   ],
   sections: defaultSections,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString()
+  createdAt: "2024-01-01T00:00:00.000Z",
+  updatedAt: "2024-01-01T00:00:00.000Z"
 };

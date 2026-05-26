@@ -24,7 +24,7 @@ export function Navbar() {
           <span className="flex size-9 items-center justify-center rounded-md bg-foreground text-background shadow-sm">
             <FileText className="size-4" />
           </span>
-          <span>RésuméForge</span>
+          <span>Résumé Forge</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => (

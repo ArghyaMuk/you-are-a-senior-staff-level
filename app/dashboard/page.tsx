@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { analyzeATS } from "@/lib/ats-engine";
+import { sampleResume } from "@/lib/sample-data";
 import { formatDate } from "@/lib/utils";
 import { useResumeStore } from "@/store/resume-store";
 
@@ -20,7 +21,7 @@ export default function DashboardPage() {
   const duplicateResume = useResumeStore((state) => state.duplicateResume);
   const deleteResume = useResumeStore((state) => state.deleteResume);
 
-  const activeResume = resumes.find((resume) => resume.id === activeResumeId) ?? resumes[0];
+  const activeResume = resumes.find((resume) => resume.id === activeResumeId) ?? resumes[0] ?? sampleResume;
   const activeReport = analyzeATS(activeResume);
 
   return (
