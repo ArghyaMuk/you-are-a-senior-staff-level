@@ -10,3 +10,5 @@ prisma/dev.db
 public/exports
 .next-dev*.log
 next-node*.log
+.claude
+README.md
