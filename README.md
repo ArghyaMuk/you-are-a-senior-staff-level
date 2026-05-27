@@ -30,18 +30,7 @@ Open `http://localhost:3000`.
 
 Copy `.env.example` to `.env.local` and set:
 
-```bash
-DATABASE_URL="postgresql://user:password@localhost:5432/resumeforge"
-AUTH_SECRET="replace-with-a-secure-secret"
-NEXTAUTH_SECRET="replace-with-a-secure-secret"
-NEXTAUTH_URL="http://localhost:3000"
-AUTH_GOOGLE_ID=""
-AUTH_GOOGLE_SECRET=""
-AUTH_MICROSOFT_ENTRA_ID_ID=""
-AUTH_MICROSOFT_ENTRA_ID_SECRET=""
-AUTH_MICROSOFT_ENTRA_ID_ISSUER=""
-NEXT_PUBLIC_AUTH_MODE="demo"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
 ```
 
 ## Scripts
