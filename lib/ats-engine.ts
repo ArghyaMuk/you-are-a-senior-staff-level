@@ -76,15 +76,34 @@ function scoreContact(resume: ResumeData) {
 }
 
 function scoreFormatting(resume: ResumeData) {
-  const hiddenCritical = resume.sections.filter((section) => !section.visible && ["experience", "skills", "education"].includes(section.key)).length;
+  const criticalSections = ["experience", "skills", "education"];
+  const hiddenCritical = resume.sections.filter((section) => !section.visible && criticalSections.includes(section.key));
   const hasTables = /<table|columns|text box/i.test(resumeToPlainText(resume));
-  const score = 100 - hiddenCritical * 18 - (hasTables ? 24 : 0);
+
+  let score = 100;
+  // Penalty per hidden critical section (proportional to total critical sections)
+  score -= hiddenCritical.length * (100 / criticalSections.length / 2);
+  // Penalty for non-parseable formatting
+  if (hasTables) score -= 25;
   return clamp(score, 0, 100);
 }
 
 function scoreReadability(words: number, bulletCount: number) {
-  const lengthScore = words < 300 ? 58 : words <= 850 ? 96 : words <= 1100 ? 82 : 62;
-  const bulletScore = bulletCount < 4 ? 55 : bulletCount <= 18 ? 95 : 82;
+  // Smooth curve: optimal range 400–800 words
+  let lengthScore: number;
+  if (words < 200) lengthScore = (words / 200) * 50;
+  else if (words <= 400) lengthScore = 50 + ((words - 200) / 200) * 46;
+  else if (words <= 800) lengthScore = 96;
+  else if (words <= 1100) lengthScore = 96 - ((words - 800) / 300) * 14;
+  else lengthScore = 82 - Math.min(((words - 1100) / 400) * 20, 20);
+
+  // Optimal range 6–18 bullets
+  let bulletScore: number;
+  if (bulletCount < 3) bulletScore = (bulletCount / 3) * 50;
+  else if (bulletCount <= 6) bulletScore = 50 + ((bulletCount - 3) / 3) * 45;
+  else if (bulletCount <= 18) bulletScore = 95;
+  else bulletScore = 95 - Math.min(((bulletCount - 18) / 10) * 13, 13);
+
   return lengthScore * 0.55 + bulletScore * 0.45;
 }
 
@@ -100,11 +119,23 @@ function scoreActionVerbs(bullets: string[]) {
   return (actioned / bullets.length) * 100;
 }
 
+function scoreSkillsRelevance(resume: ResumeData, resumeText: string) {
+  const totalSkills = resume.skills.reduce((sum, group) => sum + group.skills.length, 0);
+  if (totalSkills === 0) return 0;
+  const groupScore = Math.min(resume.skills.length, 4) / 4;
+  const depthScore = Math.min(totalSkills, 12) / 12;
+  const mentionedInResume = resume.skills
+    .flatMap((group) => group.skills)
+    .filter((skill) => resumeText.includes(normalizeText(skill))).length;
+  const evidenceScore = mentionedInResume / Math.max(totalSkills, 1);
+  return (groupScore * 0.3 + depthScore * 0.3 + evidenceScore * 0.4) * 100;
+}
+
 function scoreTitleAlignment(resume: ResumeData, resumeText: string) {
   const target = normalizeText(resume.targetRole);
-  if (!target) return 72;
+  if (!target) return 0;
   const words = target.split(" ").filter((word) => word.length > 2);
-  if (!words.length) return 72;
+  if (!words.length) return 0;
   const hits = words.filter((word) => resumeText.includes(word)).length;
   return (hits / words.length) * 100;
 }
@@ -120,12 +151,12 @@ export function analyzeATS(resume: ResumeData, jobDescription = resume.jobDescri
 
   const categories = [
     category("contact", "Contact Info", scoreContact(resume), 10),
-    category("keywords", "Keyword Match", jdAnalysis.matchPercentage || 64, 20),
+    category("keywords", "Keyword Match", jdAnalysis.matchPercentage, 20),
     category("verbs", "Action Verbs", scoreActionVerbs(bullets), 12),
     category("metrics", "Quantified Impact", scoreQuantified(bullets), 14),
     category("length", "Resume Length", scoreReadability(words, bullets.length), 10),
     category("formatting", "ATS Formatting", scoreFormatting(resume), 12),
-    category("skills", "Skills Relevance", resume.skills.length >= 2 ? 86 : 58, 10),
+    category("skills", "Skills Relevance", scoreSkillsRelevance(resume, normalized), 10),
     category("alignment", "Title Alignment", scoreTitleAlignment(resume, normalized), 12)
   ];
 

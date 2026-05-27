@@ -15,7 +15,7 @@ export function SettingsModal() {
             <ShieldCheck className="size-5 text-primary" />
             <CardTitle>Workspace Profile</CardTitle>
           </div>
-          <CardDescription>Subscription-ready account settings for Auth.js or Clerk-backed workspaces.</CardDescription>
+          <CardDescription>Account settings for your workspace.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
@@ -25,10 +25,6 @@ export function SettingsModal() {
           <div className="grid gap-2">
             <Label>Email</Label>
             <Input defaultValue="demo@resumeforge.ai" />
-          </div>
-          <div className="grid gap-2">
-            <Label>Plan</Label>
-            <Input defaultValue="Pro" readOnly />
           </div>
         </CardContent>
       </Card>

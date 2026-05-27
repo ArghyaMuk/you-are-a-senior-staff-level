@@ -8,19 +8,17 @@ import {
   Home,
   Layers,
   LayoutTemplate,
-  Plus,
+  LogOut,
+  Menu,
   Settings,
-  UserRoundCheck
+  X
 } from "lucide-react";
-import { toast } from "sonner";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { useActiveResume } from "@/hooks/use-active-resume";
 import { cn } from "@/lib/utils";
-import { useResumeStore } from "@/store/resume-store";
 
-const items = [
+const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/editor", label: "Editor", icon: FileText },
   { href: "/ats", label: "ATS Score", icon: BarChart3 },
@@ -31,64 +29,24 @@ const items = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { resume, atsReport } = useActiveResume();
-  const createResume = useResumeStore((state) => state.createResume);
-  const resumes = useResumeStore((state) => state.resumes);
-  const setActiveResume = useResumeStore((state) => state.setActiveResume);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <aside className="fixed left-0 top-0 z-30 hidden h-screen w-72 border-r bg-background/86 p-4 backdrop-blur-xl no-print lg:block">
-      <div className="flex h-full flex-col">
-        <div className="flex items-center justify-between">
+    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-xl no-print">
+      <div className="flex h-14 items-center justify-between gap-4 px-4 sm:px-6">
+        {/* Left: Logo */}
+        <div className="flex items-center gap-3">
           <Link href="/" prefetch={false} className="flex items-center gap-2 text-sm font-semibold">
-            <span className="flex size-9 items-center justify-center rounded-md bg-foreground text-background">
-              <FileText className="size-4" />
+            <span className="flex size-8 items-center justify-center rounded-md bg-foreground text-background">
+              <FileText className="size-3.5" />
             </span>
-            RésuméForge
+            <span className="hidden sm:inline">RésuméForge</span>
           </Link>
-          <ThemeToggle />
         </div>
 
-        <div className="mt-6 rounded-lg border bg-card p-3">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <p className="text-xs uppercase text-muted-foreground">Active draft</p>
-              <p className="mt-1 line-clamp-1 text-sm font-semibold">{resume.title}</p>
-            </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              aria-label="Create resume"
-              onClick={() => {
-                createResume();
-                toast.success("New resume draft created");
-              }}
-            >
-              <Plus />
-            </Button>
-          </div>
-          <select
-            value={resume.id}
-            onChange={(event) => setActiveResume(event.target.value)}
-            className="mt-3 h-9 w-full rounded-md border bg-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-          >
-            {resumes.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.title}
-              </option>
-            ))}
-          </select>
-          <div className="mt-4">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">ATS readiness</span>
-              <span className="font-semibold">{atsReport.score}%</span>
-            </div>
-            <Progress value={atsReport.score} className="mt-2" />
-          </div>
-        </div>
-
-        <nav className="mt-6 grid gap-1">
-          {items.map((item) => {
+        {/* Center: Nav links (desktop) */}
+        <nav className="hidden items-center gap-1 md:flex">
+          {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
             return (
@@ -97,29 +55,72 @@ export function Sidebar() {
                 href={item.href}
                 prefetch={false}
                 className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-all hover:bg-muted hover:text-foreground",
+                  "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
                   active && "bg-muted text-foreground"
                 )}
               >
-                <Icon className="size-4" />
+                <Icon className="size-3.5" />
                 {item.label}
               </Link>
             );
           })}
         </nav>
 
-        <div className="mt-auto rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <UserRoundCheck className="size-4" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold">Pro workspace</p>
-              <p className="text-xs text-muted-foreground">Auth ready, local demo mode</p>
-            </div>
-          </div>
+        {/* Right: Theme + Sign out + Mobile menu */}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button asChild variant="ghost" size="icon" aria-label="Sign out" className="hidden md:inline-flex">
+            <Link href="/logout" prefetch={false}>
+              <LogOut className="size-4" />
+            </Link>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle menu"
+            className="md:hidden"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            {mobileOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+          </Button>
         </div>
       </div>
-    </aside>
+
+      {/* Mobile nav dropdown */}
+      {mobileOpen && (
+        <nav className="border-t bg-background px-4 py-3 md:hidden">
+          <div className="grid gap-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={false}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                    active && "bg-muted text-foreground"
+                  )}
+                >
+                  <Icon className="size-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
+            <Link
+              href="/logout"
+              prefetch={false}
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <LogOut className="size-4" />
+              Sign out
+            </Link>
+          </div>
+        </nav>
+      )}
+    </header>
   );
 }

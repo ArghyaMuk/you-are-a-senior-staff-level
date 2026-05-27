@@ -58,12 +58,34 @@ function clone<T>(value: T): T {
 
 function freshResume() {
   const now = new Date().toISOString();
-  const resume = clone(sampleResume);
-  resume.id = uid("resume");
-  resume.title = "Untitled Resume";
-  resume.targetCompany = "";
-  resume.createdAt = now;
-  resume.updatedAt = now;
+  const resume: ResumeData = {
+    id: uid("resume"),
+    title: "",
+    targetRole: "",
+    targetCompany: "",
+    jobDescription: "",
+    template: "modern",
+    personal: {
+      fullName: "",
+      headline: "",
+      email: "",
+      phone: "",
+      location: "",
+      website: "",
+      linkedin: "",
+      github: ""
+    },
+    summary: "",
+    experience: [],
+    education: [],
+    projects: [],
+    certifications: [],
+    skills: [],
+    achievements: [],
+    sections: clone(defaultSections),
+    createdAt: now,
+    updatedAt: now
+  };
   return resume;
 }
 

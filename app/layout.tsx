@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     default: "RésuméForge",
     template: "%s | RésuméForge"
   },
-  description: "A premium ATS resume builder for high-signal job applications.",
+  description: "An ATS resume builder for high-signal job applications.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   openGraph: {
     title: "RésuméForge",

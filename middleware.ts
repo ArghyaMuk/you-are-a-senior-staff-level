@@ -3,7 +3,8 @@ import { NextResponse, type NextRequest } from "next/server";
 const protectedRoutes = ["/dashboard", "/editor", "/ats", "/templates", "/preview", "/settings"];
 
 export function middleware(request: NextRequest) {
-  const authRequired = process.env.NEXT_PUBLIC_AUTH_MODE === "required";
+  const authMode = process.env.NEXT_PUBLIC_AUTH_MODE ?? "required";
+  const authRequired = authMode !== "demo";
   const isProtected = protectedRoutes.some((path) => request.nextUrl.pathname.startsWith(path));
 
   if (!authRequired || !isProtected) {

@@ -30,8 +30,7 @@ export async function POST(request: Request) {
       name: parsed.data.name,
       email,
       passwordHash: hash,
-      passwordSalt: salt,
-      tier: "free"
+      passwordSalt: salt
     }
   });
 

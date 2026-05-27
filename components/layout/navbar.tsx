@@ -2,16 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/editor", label: "Editor" },
-  { href: "/templates", label: "Templates" },
-  { href: "/ats", label: "ATS" }
+  { href: "/login", label: "Editor" },
+  { href: "/login", label: "Templates" },
+  { href: "/login", label: "ATS" }
 ];
 
 export function Navbar() {
@@ -29,7 +28,7 @@ export function Navbar() {
         <nav className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => (
             <Link
-              key={item.href}
+              key={item.label}
               href={item.href}
               prefetch={false}
               className={cn(
@@ -46,12 +45,6 @@ export function Navbar() {
           <Button asChild variant="outline" className="hidden sm:inline-flex">
             <Link href="/login" prefetch={false}>
               Login
-            </Link>
-          </Button>
-          <Button asChild variant="premium">
-            <Link href="/editor" prefetch={false}>
-              Build
-              <ArrowRight />
             </Link>
           </Button>
         </div>
