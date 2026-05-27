@@ -4,7 +4,7 @@ A production-ready ATS resume builder SaaS built with Next.js 15, React 19, Type
 
 ## What Is Included
 
-- Premium responsive SaaS UI with light and dark mode
+- Responsive UI with light and dark mode
 - Landing page, dashboard, editor, ATS, templates, preview, and settings routes
 - Structured resume editor with autosave, dynamic sections, drag-and-drop ordering, visibility toggles, undo/redo, and version history
 - Real ATS scoring engine for contact details, keywords, action verbs, quantified impact, length, formatting, skills, readability, title alignment, and parsing safety
@@ -63,7 +63,7 @@ PDF export uses `pdf-lib`; DOCX export uses `docx`. TXT export is the most ATS-s
 
 <div align="center">
 
-  **The Premium ATS-Optimized Resume Builder SaaS**
+  **The ATS-Optimized Resume Builder**
 
   *Craft polished, ATS-safe résumés tailored to specific roles in seconds.*
 
@@ -89,7 +89,7 @@ PDF export uses `pdf-lib`; DOCX export uses `docx`. TXT export is the most ATS-s
 * Upload a target job description and watch the engine compute a **match percentage**.
 * Instantly surfaces missing keywords, category-level scores, and actionable improvements.
 
-👔 **Premium Multi-Template Engine**
+👔 **Multi-Template Engine**
 * Toggle layouts instantly on the preview screen.
 * Includes *Editorial, Modern, Executive, Minimal, Corporate, Technical,* and *Creative* layouts.
 
@@ -98,9 +98,8 @@ PDF export uses `pdf-lib`; DOCX export uses `docx`. TXT export is the most ATS-s
 * **DOCX & TXT:** Clean semantic structures designed specifically for parsing algorithms.
 * Quick-share flows and native browser print styles included.
 
-👥 **SaaS Readiness Built-In**
+👥 **Production Readiness Built-In**
 * Secure social & credentials authentication via **NextAuth v5**.
-* Multi-tier subscriptions (*Free, Pro, Team, Enterprise*) mapped directly at the database layer.
 * Automatic snapshot versioning for history tracking and instant rollbacks.
 * Flawless **Dark/Light theming** with fluid motion transitions.
 
@@ -159,7 +158,7 @@ graph TD
 │   ├── editor/             # Interactive multi-step editor
 │   ├── login/              # Secure sign-in flows
 │   ├── preview/            # Live-updating resume canvas
-│   ├── settings/           # Profile & subscription management
+│   ├── settings/           # Profile & workspace settings
 │   └── templates/          # Visual layout showcase
 ├── components/             # Atomic, feature-grouped UI elements
 ├── hooks/                  # Reusable custom React hooks

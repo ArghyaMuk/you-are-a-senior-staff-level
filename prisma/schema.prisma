@@ -17,13 +17,6 @@ enum ResumeTemplate {
   creative
 }
 
-enum SubscriptionTier {
-  free
-  pro
-  team
-  enterprise
-}
-
 model User {
   id               String            @id @default(cuid())
   name             String?
@@ -32,7 +25,6 @@ model User {
   image            String?
   passwordHash     String?
   passwordSalt     String?
-  tier             SubscriptionTier  @default(free)
   resumes          Resume[]
   accounts         Account[]
   sessions         Session[]

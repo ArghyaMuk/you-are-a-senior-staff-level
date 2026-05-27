@@ -5,17 +5,25 @@ import { ExportToolbar } from "@/components/export/export-toolbar";
 import { ResumeEditor } from "@/components/editor/resume-editor";
 import { AppShell } from "@/components/layout/app-shell";
 import { ResumePreview } from "@/components/templates/resume-preview";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useActiveResume } from "@/hooks/use-active-resume";
+import { useResumeStore } from "@/store/resume-store";
 
 export default function EditorPage() {
   const { resume } = useActiveResume();
+  const patchActiveResume = useResumeStore((state) => state.patchActiveResume);
 
   return (
     <AppShell>
       <div className="grid gap-6">
         <div>
-          <h1 className="text-3xl font-semibold tracking-normal">Editor</h1>
+          <Input
+            value={resume.title}
+            onChange={(e) => patchActiveResume({ title: e.target.value })}
+            placeholder="Name your resume..."
+            className="h-auto border-none bg-transparent p-0 text-3xl font-semibold tracking-normal shadow-none placeholder:text-muted-foreground/50 focus-visible:ring-0"
+          />
           <p className="mt-2 text-muted-foreground">Create, tailor, score, and export from one focused workspace.</p>
         </div>
         <Tabs defaultValue="editor">

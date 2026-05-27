@@ -1,18 +1,20 @@
 "use client";
 
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BarChart3, CheckCircle2, FileText, Layers, Lock, SearchCheck, Wand2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { analyzeATS } from "@/lib/ats-engine";
+import { useResumeStore } from "@/store/resume-store";
 
 const features = [
   { icon: FileText, title: "Structured resume builder", text: "Edit every section with typed data, smart defaults, autosave, and version history." },
   { icon: BarChart3, title: "Real ATS scoring", text: "Checks parsing, keywords, action verbs, quantified impact, readability, and role alignment." },
   { icon: SearchCheck, title: "Guided resume review", text: "Spot keyword gaps, structure issues, and practical fixes before you export." },
-  { icon: Layers, title: "Premium templates", text: "Seven ATS-safe templates with distinct typography, spacing, and print behavior." },
+  { icon: Layers, title: "ATS-safe templates", text: "Seven ATS-safe templates with distinct typography, spacing, and print behavior." },
   { icon: Wand2, title: "Smart optimization", text: "Extract missing skills, strengthen bullets, and build company-specific resume variants." },
   { icon: Lock, title: "Enterprise-ready base", text: "Auth-ready, Prisma-ready, Vercel-ready architecture with local persistence today." }
 ];
@@ -20,7 +22,7 @@ const features = [
 const testimonials = [
   "It felt less like filling forms and more like having a senior recruiter sitting beside me.",
   "The ATS report caught the exact keyword gaps our candidates kept missing.",
-  "The templates finally look premium while staying parser safe."
+  "The templates look polished while staying parser safe."
 ];
 
 function ResumeMockup() {
@@ -77,7 +79,115 @@ function ResumeMockup() {
   );
 }
 
+function AnimatedScoreBar({ label, value, delay }: { label: string; value: number; delay: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { margin: "-30px" });
+  const [displayValue, setDisplayValue] = useState(0);
+  const [barWidth, setBarWidth] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    let animationId: number;
+    let timeout: ReturnType<typeof setTimeout>;
+
+    function runCycle() {
+      const duration = 1200;
+      const pauseAtTop = 2000;
+      const pauseAtBottom = 400;
+      const startTime = performance.now();
+
+      function animateUp(currentTime: number) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setDisplayValue(Math.round(eased * value));
+        setBarWidth(eased * value);
+        if (progress < 1) {
+          animationId = requestAnimationFrame(animateUp);
+        } else {
+          timeout = setTimeout(() => {
+            const downStart = performance.now();
+            function animateDown(currentTime: number) {
+              const elapsed = currentTime - downStart;
+              const progress = Math.min(elapsed / duration, 1);
+              const eased = 1 - Math.pow(1 - progress, 3);
+              setDisplayValue(Math.round((1 - eased) * value));
+              setBarWidth((1 - eased) * value);
+              if (progress < 1) {
+                animationId = requestAnimationFrame(animateDown);
+              } else {
+                timeout = setTimeout(runCycle, pauseAtBottom);
+              }
+            }
+            animationId = requestAnimationFrame(animateDown);
+          }, pauseAtTop);
+        }
+      }
+
+      animationId = requestAnimationFrame(animateUp);
+    }
+
+    timeout = setTimeout(runCycle, delay * 1000);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      clearTimeout(timeout);
+    };
+  }, [isInView, value, delay]);
+
+  return (
+    <div ref={ref}>
+      <div className="mb-2 flex justify-between text-sm">
+        <span>{label}</span>
+        <span className="font-semibold tabular-nums">{displayValue}%</span>
+      </div>
+      <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
+        <motion.div
+          className="h-full rounded-full bg-primary"
+          style={{ width: `${barWidth}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export function LandingHero() {
+  const resumes = useResumeStore((state) => state.resumes);
+  const activeResumeId = useResumeStore((state) => state.activeResumeId);
+  const hydrated = useResumeStore((state) => state.hydrated);
+
+  const activeResume = resumes.find((r) => r.id === activeResumeId) ?? resumes[0];
+  const hasResume = hydrated && activeResume && (activeResume.title || activeResume.personal.fullName || activeResume.targetRole);
+
+  const atsReport = useMemo(() => {
+    if (!hasResume || !activeResume) return null;
+    return analyzeATS(activeResume);
+  }, [hasResume, activeResume]);
+
+  // Pick 4 key categories to display
+  const scoreItems = useMemo(() => {
+    if (!atsReport) {
+      return [
+        ["Keyword match", 88],
+        ["Quantified impact", 76],
+        ["Parsing safety", 96],
+        ["Role alignment", 83]
+      ] as [string, number][];
+    }
+    const categoryMap: Record<string, string> = {
+      keywords: "Keyword match",
+      metrics: "Quantified impact",
+      formatting: "Parsing safety",
+      alignment: "Role alignment"
+    };
+    const keys = ["keywords", "metrics", "formatting", "alignment"];
+    return keys.map((key) => {
+      const cat = atsReport.categories.find((c) => c.key === key);
+      return [categoryMap[key], cat?.score ?? 0] as [string, number];
+    });
+  }, [atsReport]);
+
   return (
     <div>
       <section className="relative overflow-hidden px-4 py-20 sm:py-24">
@@ -92,17 +202,14 @@ export function LandingHero() {
             RésuméForge
           </motion.h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            Build, score, tailor, and export premium ATS-safe resumes with practical keyword and readability guidance.
+            Build, score, tailor, and export ATS-safe resumes with practical keyword and readability guidance.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button asChild size="lg" variant="premium">
-              <Link href="/editor" prefetch={false}>
+            <Button asChild size="lg">
+              <Link href="/login" prefetch={false}>
                 Start building
                 <ArrowRight />
               </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/dashboard" prefetch={false}>Open dashboard</Link>
             </Button>
           </div>
           <div className="mt-12">
@@ -113,18 +220,31 @@ export function LandingHero() {
 
       <section className="border-y bg-background/70 px-4 py-16">
         <div className="container grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature) => {
+          {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <Card key={feature.title} className="transition-all hover:-translate-y-0.5 hover:shadow-lift">
-                <CardHeader>
-                  <div className="mb-2 flex size-10 items-center justify-center rounded-md bg-primary/10 text-primary">
-                    <Icon className="size-5" />
-                  </div>
-                  <CardTitle>{feature.title}</CardTitle>
-                  <CardDescription>{feature.text}</CardDescription>
-                </CardHeader>
-              </Card>
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                whileHover={{ y: -4 }}
+              >
+                <Card className="h-full transition-shadow hover:shadow-lift">
+                  <CardHeader>
+                    <motion.div
+                      className="mb-2 flex size-10 items-center justify-center rounded-md bg-primary/10 text-primary"
+                      whileHover={{ rotate: 5, scale: 1.1 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <Icon className="size-5" />
+                    </motion.div>
+                    <CardTitle>{feature.title}</CardTitle>
+                    <CardDescription>{feature.text}</CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
             );
           })}
         </div>
@@ -132,63 +252,57 @@ export function LandingHero() {
 
       <section className="px-4 py-16">
         <div className="container grid gap-6 lg:grid-cols-[360px_1fr]">
-          <Card>
-            <CardHeader>
-              <CardTitle>ATS score demo</CardTitle>
-              <CardDescription>Practical checks that feel closer to a real resume screen than a vanity score.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              {[
-                ["Keyword match", 88],
-                ["Quantified impact", 76],
-                ["Parsing safety", 96],
-                ["Role alignment", 83]
-              ].map(([label, value]) => (
-                <div key={label as string}>
-                  <div className="mb-2 flex justify-between text-sm">
-                    <span>{label}</span>
-                    <span className="font-semibold">{value}%</span>
-                  </div>
-                  <Progress value={value as number} />
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle>{hasResume ? "Your ATS Score" : "ATS score demo"}</CardTitle>
+                <CardDescription>
+                  {hasResume
+                    ? `Live scoring for "${activeResume!.title || "your resume"}".`
+                    : "Practical checks that feel closer to a real resume screen than a vanity score."}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                {scoreItems.map(([label, value], index) => (
+                  <AnimatedScoreBar key={label} label={label} value={value} delay={index * 0.2} />
+                ))}
+              </CardContent>
+            </Card>
+          </motion.div>
           <div className="grid gap-4 md:grid-cols-3">
-            {testimonials.map((quote) => (
-              <Card key={quote}>
-                <CardContent className="p-5">
-                  <CheckCircle2 className="mb-4 size-5 text-primary" />
-                  <p className="text-sm leading-6 text-muted-foreground">&quot;{quote}&quot;</p>
-                </CardContent>
-              </Card>
+            {testimonials.map((quote, index) => (
+              <motion.div
+                key={quote}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.4, delay: 0.1 + index * 0.15 }}
+                whileHover={{ scale: 1.03, y: -4 }}
+              >
+                <Card className="h-full transition-shadow hover:shadow-lift">
+                  <CardContent className="p-5">
+                    <motion.div
+                      initial={{ rotate: -10, scale: 0 }}
+                      whileInView={{ rotate: 0, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ type: "spring", delay: 0.3 + index * 0.15 }}
+                    >
+                      <CheckCircle2 className="mb-4 size-5 text-primary" />
+                    </motion.div>
+                    <p className="text-sm leading-6 text-muted-foreground">&quot;{quote}&quot;</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="px-4 pb-20">
-        <div className="container grid gap-4 md:grid-cols-3">
-          {[
-            ["Starter", "$0", "Local drafts, ATS score, TXT export"],
-            ["Pro", "$16", "PDF/DOCX export, version history, advanced ATS guidance"],
-            ["Team", "$49", "Shared templates, admin controls, usage reporting"]
-          ].map(([name, price, detail]) => (
-            <Card key={name} className={name === "Pro" ? "border-primary shadow-glow" : ""}>
-              <CardHeader>
-                <CardTitle>{name}</CardTitle>
-                <CardDescription>{detail}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold">{price}</p>
-                <Button className="mt-5 w-full" variant={name === "Pro" ? "default" : "outline"} asChild>
-                  <Link href="/editor" prefetch={false}>Choose {name}</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }
